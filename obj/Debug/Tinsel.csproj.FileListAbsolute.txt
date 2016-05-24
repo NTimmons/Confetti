@@ -1,0 +1,6 @@
+C:\Users\Nicholas\Desktop\Tinsel\bin\Debug\Tinsel.exe.config
+C:\Users\Nicholas\Desktop\Tinsel\obj\Debug\Tinsel.csprojResolveAssemblyReference.cache
+C:\Users\Nicholas\Desktop\Tinsel\bin\Debug\Tinsel.exe
+C:\Users\Nicholas\Desktop\Tinsel\bin\Debug\Tinsel.pdb
+C:\Users\Nicholas\Desktop\Tinsel\obj\Debug\Tinsel.exe
+C:\Users\Nicholas\Desktop\Tinsel\obj\Debug\Tinsel.pdb
