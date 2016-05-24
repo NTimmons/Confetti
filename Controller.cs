@@ -11,11 +11,11 @@ namespace Tinsel
 {
     class Controller
     {
-        private List<string>    m_knownNodes = new List<string>();
+        private List<string>        m_knownNodes    = new List<string>();
 
-        private List<int>           m_requestedIDs = new List<int>();
-        private List<RecieveObject> m_requestedObj = new List<RecieveObject>();
-        private List<RecieveObject> m_finishedObj = new List<RecieveObject>();
+        private List<int>           m_requestedIDs  = new List<int>();
+        private List<RecieveObject> m_requestedObj  = new List<RecieveObject>();
+        private List<RecieveObject> m_finishedObj   = new List<RecieveObject>();
         
 
         private UdpClient udpClient;
@@ -30,7 +30,7 @@ namespace Tinsel
         public void AddRequest( int id)
         {
             m_requestedIDs.Add(id);
-            m_requestedObj.Add(new RecieveObject());
+            m_requestedObj.Add(new RecieveObject(id));
         }
 
         public void AddNode(string _ip)
@@ -130,6 +130,8 @@ namespace Tinsel
                             pack.size = recievePacket[2];
                             pack.data = recievePacket[3];
 
+                            Console.WriteLine(pack.data);
+
                             m_requestedObj[i].AddPacket(pack);
 
                             if(m_requestedObj[i].m_full)
@@ -141,13 +143,13 @@ namespace Tinsel
                         }
                     }
 
-                    Console.WriteLine("OBJID, PACKETID, SIZE, DATA: " + recievePacket[0]
+                   /* Console.WriteLine("OBJID, PACKETID, SIZE, DATA: " + recievePacket[0]
                         + ", " + recievePacket[1] + " " + recievePacket[2] + " " + recievePacket[3]);
 
                     Console.WriteLine("This message was sent from " +
                                                 RemoteIpEndPoint.Address.ToString() +
                                                 " on their port number " +
-                                                RemoteIpEndPoint.Port.ToString());
+                                                RemoteIpEndPoint.Port.ToString());*/
                 }
                 catch (Exception e)
                 {
