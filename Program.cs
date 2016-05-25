@@ -14,7 +14,7 @@ namespace Tinsel
         {
             Controller MainController = new Controller();
 
-            MainController.AddNode("192.168.0.1");
+            MainController.AddNode("127.0.0.1");
             MainController.InitClient(11001);
 
             TransferObject TransObj = new TransferObject();
@@ -49,9 +49,6 @@ namespace Tinsel
             }
 
             MainController.StopBouncing();
-
-            
-
         }
     }
 }

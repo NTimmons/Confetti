@@ -60,7 +60,7 @@ namespace Tinsel
                 byte[] bytePacket = new byte[intArray.Length * sizeof(int)];
                 Buffer.BlockCopy(intArray, 0, bytePacket, 0, bytePacket.Length);
 
-                SendUdp("127.0.0.1", 11000, bytePacket);
+                SendUdp(m_knownNodes[i], 11000, bytePacket);
             }
 
             return anySent;
