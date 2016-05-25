@@ -71,7 +71,7 @@ namespace Tinsel
             bool anySent = false;
             for (int i = 0; i < m_knownNodes.Count(); i++)
             {
-                SendUdp("127.0.0.1", 11000, _packet);
+                SendUdp(m_knownNodes[i], 11000, _packet);
             }
 
             return anySent;
@@ -97,11 +97,13 @@ namespace Tinsel
             //Creates a UdpClient for reading incoming data.
             UdpClient receivingUdpClient = new UdpClient(11000);
 
+            //Creates an IPEndPoint to record the IP Address and port number of the sender. 
+            // The IPEndPoint will allow you to read datagrams sent from any source.
+            IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+
             while (m_bouncing)
             {
-                //Creates an IPEndPoint to record the IP Address and port number of the sender. 
-                // The IPEndPoint will allow you to read datagrams sent from any source.
-                IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+         
                 try
                 {
                     // Blocks until a message returns on this socket from a remote host.
@@ -116,19 +118,17 @@ namespace Tinsel
                     recievePacket[2] = BitConverter.ToInt32(receiveBytes, 8);
                     recievePacket[3] = BitConverter.ToInt32(receiveBytes, 12);
 
-
                     SendPacket(receiveBytes);
-
 
                     for (int i = 0; i < m_requestedIDs.Count; i++)
                     {
                         if (recievePacket[0] == m_requestedIDs[i])
                         {
                             TransferPacket pack = new TransferPacket();
-                            pack.object_id = recievePacket[0];
-                            pack.packet_id = recievePacket[1];
-                            pack.size = recievePacket[2];
-                            pack.data = recievePacket[3];
+                            pack.object_id  = recievePacket[0];
+                            pack.packet_id  = recievePacket[1];
+                            pack.size       = recievePacket[2];
+                            pack.data       = recievePacket[3];
 
                             Console.WriteLine(pack.data);
 
@@ -143,10 +143,10 @@ namespace Tinsel
                         }
                     }
 
-                   /* Console.WriteLine("OBJID, PACKETID, SIZE, DATA: " + recievePacket[0]
+                    Console.WriteLine(RemoteIpEndPoint.Address.ToString() + " : OBJID, PACKETID, SIZE, DATA: " + recievePacket[0]
                         + ", " + recievePacket[1] + " " + recievePacket[2] + " " + recievePacket[3]);
 
-                    Console.WriteLine("This message was sent from " +
+                    /*Console.WriteLine("This message was sent from " +
                                                 RemoteIpEndPoint.Address.ToString() +
                                                 " on their port number " +
                                                 RemoteIpEndPoint.Port.ToString());*/

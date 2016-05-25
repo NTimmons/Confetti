@@ -15,11 +15,13 @@ namespace Tinsel
             Controller MainController = new Controller();
 
             MainController.AddNode("127.0.0.1");
+            MainController.AddNode("82.13.143.52");
+
             MainController.InitClient(11001);
 
             TransferObject TransObj = new TransferObject();
 
-            MainController.AddRequest(8);
+            MainController.AddRequest(12);
             MainController.StartBouncing();
 
             Thread.Sleep(100);
