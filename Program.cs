@@ -5,45 +5,50 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace Tinsel
+namespace Confetti
 {
     class Program
     {
         static void Main(string[] args)
         {
+            //Do setup.
+            StartupForm introForm = new StartupForm();
+            introForm.ShowDialog();
+
             Controller MainController = new Controller();
 
-            MainController.AddNode("127.0.0.1");
-            MainController.AddNode("82.13.143.52");
+            for(int i = 0; i < introForm.m_nodes.Count(); i++ )
+            {
+                MainController.AddNode(introForm.m_nodes[i]);
+            }
+            
+            // Setup the controller for sending and recieving packets.
+            MainController.InitClient(introForm.m_sourcePort, introForm.m_destinationPort);
 
-            MainController.InitClient(11001);
+            TransferObject TransObj = new TransferObject(introForm.m_outgoingID);
 
-            TransferObject TransObj = new TransferObject();
+            // We are looking to find any floating packets with the specific ID.
+            MainController.AddRequest(introForm.m_requestID);
 
-            MainController.AddRequest(12);
+            // Start bouncing like Delay-line memory.
             MainController.StartBouncing();
 
-            Thread.Sleep(100);
-            TransferPacket pack = TransObj.GetPacket();
-            MainController.SendPacket(pack);
+            //Loop until all data is in the line.
+            bool packetsLeft = true;
+            while (packetsLeft)
+            {
+                Thread.Sleep(1000);
+                TransferPacket pack = TransObj.GetPacket();
 
-            Thread.Sleep(1000);
-            pack = TransObj.GetPacket();
-            MainController.SendPacket(pack);
-
-            Thread.Sleep(1000);
-            pack = TransObj.GetPacket();
-            MainController.SendPacket(pack);
-
-            Thread.Sleep(1000);
-            pack = TransObj.GetPacket();
-            MainController.SendPacket(pack);
-
-            Thread.Sleep(1000);
-            pack = TransObj.GetPacket();
-            MainController.SendPacket(pack);
-
+                if (pack.size > 0)
+                    MainController.SendPacket(pack);
+                else
+                    packetsLeft = false;
+            }
+                
+            //Just keep running and bouncing data.
             while (true)
             {
                 Thread.Sleep(1000);

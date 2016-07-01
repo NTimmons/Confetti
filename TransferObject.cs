@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tinsel
+namespace Confetti
 {
 
     class TransferPacket
@@ -20,7 +20,12 @@ namespace Tinsel
         private int[]   m_transferArray         = new int[5] { 1, 2, 3, 4, 5 };
         private bool[]  m_transferArrayExists   = new bool[5] { true, true, true, true, true };
         private int     m_id                    = 8;
-        
+
+        public TransferObject( int _id)
+        {
+            m_id = _id;
+        }
+
         public TransferPacket GetPacket()
         {
             TransferPacket obj = new TransferPacket();

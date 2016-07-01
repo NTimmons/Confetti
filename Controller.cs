@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Tinsel
+namespace Confetti
 {
     class Controller
     {
@@ -17,15 +17,11 @@ namespace Tinsel
         private List<RecieveObject> m_requestedObj  = new List<RecieveObject>();
         private List<RecieveObject> m_finishedObj   = new List<RecieveObject>();
         
-
-        private UdpClient udpClient;
-
-        private int m_srcPort;
-
-        private bool m_bouncing = false;
-
-        private Thread m_workerThread;
-
+        private UdpClient           udpClient;
+        private int                 m_srcPort;
+        private int                 m_dstPort;
+        private bool                m_bouncing      = false;
+        private Thread              m_workerThread;
 
         public void AddRequest( int id)
         {
@@ -38,9 +34,10 @@ namespace Tinsel
             m_knownNodes.Add(_ip);
         }
 
-        public void InitClient(int _srcPort)
+        public void InitClient(int _srcPort, int _dstPort)
         {
             m_srcPort = _srcPort;
+            m_dstPort = _dstPort;
             udpClient = new UdpClient();
         }
 
@@ -83,7 +80,7 @@ namespace Tinsel
             m_workerThread = new Thread(BounceFunction);
 
             m_workerThread.Start();
-            while (!m_workerThread.IsAlive) ;
+            while (!m_workerThread.IsAlive);
         }
 
         public void StopBouncing()
@@ -103,7 +100,6 @@ namespace Tinsel
 
             while (m_bouncing)
             {
-         
                 try
                 {
                     // Blocks until a message returns on this socket from a remote host.
@@ -143,13 +139,9 @@ namespace Tinsel
                         }
                     }
 
-                    Console.WriteLine(RemoteIpEndPoint.Address.ToString() + " : OBJID, PACKETID, SIZE, DATA: " + recievePacket[0]
-                        + ", " + recievePacket[1] + " " + recievePacket[2] + " " + recievePacket[3]);
+                    //Console.WriteLine(RemoteIpEndPoint.Address.ToString() + " : OBJID, PACKETID, SIZE, DATA: " + recievePacket[0]
+                    //    + ", " + recievePacket[1] + " " + recievePacket[2] + " " + recievePacket[3]);
 
-                    /*Console.WriteLine("This message was sent from " +
-                                                RemoteIpEndPoint.Address.ToString() +
-                                                " on their port number " +
-                                                RemoteIpEndPoint.Port.ToString());*/
                 }
                 catch (Exception e)
                 {
