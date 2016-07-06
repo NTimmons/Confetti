@@ -41,6 +41,10 @@
             this.reqIdBox = new System.Windows.Forms.TextBox();
             this.outgoingIdBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.filenameBox = new System.Windows.Forms.TextBox();
+            this.OpenButton = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // StartButton
@@ -138,7 +142,7 @@
             this.reqIdBox.Name = "reqIdBox";
             this.reqIdBox.Size = new System.Drawing.Size(27, 20);
             this.reqIdBox.TabIndex = 9;
-            this.reqIdBox.Text = "12";
+            this.reqIdBox.Text = "8";
             // 
             // outgoingIdBox
             // 
@@ -157,11 +161,44 @@
             this.label4.TabIndex = 12;
             this.label4.Text = "OutgoingID";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(27, 295);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(49, 13);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "Filename";
+            // 
+            // filenameBox
+            // 
+            this.filenameBox.Location = new System.Drawing.Point(94, 292);
+            this.filenameBox.Name = "filenameBox";
+            this.filenameBox.Size = new System.Drawing.Size(85, 20);
+            this.filenameBox.TabIndex = 13;
+            // 
+            // OpenButton
+            // 
+            this.OpenButton.Location = new System.Drawing.Point(185, 289);
+            this.OpenButton.Name = "OpenButton";
+            this.OpenButton.Size = new System.Drawing.Size(75, 23);
+            this.OpenButton.TabIndex = 15;
+            this.OpenButton.Text = "Open...";
+            this.OpenButton.UseVisualStyleBackColor = true;
+            this.OpenButton.Click += new System.EventHandler(this.OpenButton_Click);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
             // StartupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 404);
+            this.Controls.Add(this.OpenButton);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.filenameBox);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.outgoingIdBox);
             this.Controls.Add(this.label3);
@@ -198,5 +235,9 @@
         private System.Windows.Forms.TextBox reqIdBox;
         private System.Windows.Forms.TextBox outgoingIdBox;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox filenameBox;
+        private System.Windows.Forms.Button OpenButton;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }

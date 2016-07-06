@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace Confetti
         public int m_destinationPort;
         public int m_requestID;
         public int m_outgoingID;
+        public String m_filename;
 
         public StartupForm()
         {
@@ -42,6 +44,7 @@ namespace Confetti
             m_destinationPort = int.Parse(dstPortBox.Text);
             m_requestID = int.Parse(reqIdBox.Text);
             m_outgoingID = int.Parse(outgoingIdBox.Text);
+            m_filename = filenameBox.Text;
 
             Close();
         }
@@ -71,6 +74,20 @@ namespace Confetti
         private void StartupForm_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void OpenButton_Click(object sender, EventArgs e)
+        {
+            int size = -1;
+
+            DialogResult result = DialogResult.OK;
+            result = openFileDialog1.ShowDialog();
+
+            if (result == DialogResult.OK) // Test result.
+            {
+                string file = openFileDialog1.FileName;
+                filenameBox.Text = file;
+            }
         }
     }
 }

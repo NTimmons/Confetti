@@ -114,17 +114,21 @@ namespace Confetti
                     recievePacket[2] = BitConverter.ToInt32(receiveBytes, 8);
                     recievePacket[3] = BitConverter.ToInt32(receiveBytes, 12);
 
-                    SendPacket(receiveBytes);
+
+
+                    bool collected = false;
 
                     for (int i = 0; i < m_requestedIDs.Count; i++)
                     {
                         if (recievePacket[0] == m_requestedIDs[i])
                         {
+                            collected = true;
+
                             TransferPacket pack = new TransferPacket();
                             pack.object_id  = recievePacket[0];
                             pack.packet_id  = recievePacket[1];
                             pack.size       = recievePacket[2];
-                            pack.data       = recievePacket[3];
+                            pack.data       = (byte)recievePacket[3];
 
                             Console.WriteLine(pack.data);
 
@@ -137,6 +141,11 @@ namespace Confetti
                                 m_requestedObj.RemoveAt(i);
                             }
                         }
+                    }
+
+                    if(!collected)
+                    {
+                        SendPacket(receiveBytes);
                     }
 
                     //Console.WriteLine(RemoteIpEndPoint.Address.ToString() + " : OBJID, PACKETID, SIZE, DATA: " + recievePacket[0]

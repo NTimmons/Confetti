@@ -11,11 +11,13 @@ namespace Confetti
 {
     class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
             //Do setup.
             StartupForm introForm = new StartupForm();
             introForm.ShowDialog();
+
 
             Controller MainController = new Controller();
 
@@ -27,7 +29,7 @@ namespace Confetti
             // Setup the controller for sending and recieving packets.
             MainController.InitClient(introForm.m_sourcePort, introForm.m_destinationPort);
 
-            TransferObject TransObj = new TransferObject(introForm.m_outgoingID);
+            TransferObject TransObj = new TransferObject(introForm.m_outgoingID, introForm.m_filename);
 
             // We are looking to find any floating packets with the specific ID.
             MainController.AddRequest(introForm.m_requestID);
@@ -39,7 +41,7 @@ namespace Confetti
             bool packetsLeft = true;
             while (packetsLeft)
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(100);
                 TransferPacket pack = TransObj.GetPacket();
 
                 if (pack.size > 0)
