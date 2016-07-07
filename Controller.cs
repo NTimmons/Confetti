@@ -3,14 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+
+
 namespace Confetti
 {
+
+
+
     class Controller
     {
+
+
+        [DllImport("kernel32.dll", EntryPoint = "CopyMemory", SetLastError = false)]
+        private static unsafe extern void CopyMemory(void* dest, void* src, int count);
+
         private List<string>        m_knownNodes    = new List<string>();
 
         private List<int>           m_requestedIDs  = new List<int>();
@@ -46,18 +57,50 @@ namespace Confetti
             udpClient.Send(data, data.Length, dstIp, dstPort);
         }
 
+        //Send packet
+        internal unsafe struct outPacket
+        {
+           public int obj_id;
+           public int packet_id;
+           public int size;
+           public fixed byte fixedBuffer[Globals.bytesPerPacket];
+        };
+
         public bool SendPacket(TransferPacket _packet)
         {
             bool anySent = false;
-            for ( int i = 0; i < m_knownNodes.Count(); i++)
+
+
+            outPacket dat = new outPacket();
+            outPacket[] datArray = { dat };
+
+            unsafe
             {
-                //Send packet
-                int[] intArray = { _packet.object_id, _packet.packet_id, _packet.size, _packet.data };
+                dat.obj_id = _packet.object_id;
+                dat.packet_id = _packet.packet_id;
+                dat.size = _packet.size;
 
-                byte[] bytePacket = new byte[intArray.Length * sizeof(int)];
-                Buffer.BlockCopy(intArray, 0, bytePacket, 0, bytePacket.Length);
+                for (int j = 0; j < Globals.bytesPerPacket; j++)
+                {
+                    dat.fixedBuffer[j] = _packet.data[j];
+                }
 
-                SendUdp(m_knownNodes[i], 11000, bytePacket);
+                byte[] bytePacket = new byte[sizeof(outPacket)];
+
+                unsafe
+                {
+                        fixed (void* s = &bytePacket[0])
+                        {
+                            CopyMemory(s, &dat, sizeof(outPacket));
+                        }
+                }
+
+                //Buffer.BlockCopy(datArray, 0, bytePacket, 0, bytePacket.Length);
+
+                for (int i = 0; i < m_knownNodes.Count(); i++)
+                {
+                    SendUdp(m_knownNodes[i], 11000, bytePacket);
+                }
             }
 
             return anySent;
@@ -107,14 +150,17 @@ namespace Confetti
 
                     string returnData = Encoding.ASCII.GetString(receiveBytes);
 
-                    int[] recievePacket = new int[4];
+                    int[] recievePacket = new int[3];
 
                     recievePacket[0] = BitConverter.ToInt32(receiveBytes, 0);
                     recievePacket[1] = BitConverter.ToInt32(receiveBytes, 4);
                     recievePacket[2] = BitConverter.ToInt32(receiveBytes, 8);
-                    recievePacket[3] = BitConverter.ToInt32(receiveBytes, 12);
 
-
+                    byte[] packetData = new byte[Globals.bytesPerPacket];
+                    for(int i = 0; i < Globals.bytesPerPacket; i++)
+                    {
+                        packetData[i] = receiveBytes[i + 12];
+                    }
 
                     bool collected = false;
 
@@ -125,12 +171,17 @@ namespace Confetti
                             collected = true;
 
                             TransferPacket pack = new TransferPacket();
-                            pack.object_id  = recievePacket[0];
-                            pack.packet_id  = recievePacket[1];
-                            pack.size       = recievePacket[2];
-                            pack.data       = (byte)recievePacket[3];
 
-                            Console.WriteLine(pack.data);
+                            unsafe
+                            {
+                                pack.object_id = recievePacket[0];
+                                pack.packet_id = recievePacket[1];
+                                pack.size = recievePacket[2];
+                                for (int k = 0; k < Globals.bytesPerPacket; k++)
+                                {
+                                    pack.data[k] = packetData[k];
+                                }
+                            }
 
                             m_requestedObj[i].AddPacket(pack);
 

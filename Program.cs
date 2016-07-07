@@ -9,6 +9,12 @@ using System.Windows.Forms;
 
 namespace Confetti
 {
+    public static class Globals
+    {
+        public const int bytesPerPacket = 8192;//4096;
+    }
+
+
     class Program
     {
         [STAThread]
@@ -41,7 +47,7 @@ namespace Confetti
             bool packetsLeft = true;
             while (packetsLeft)
             {
-                Thread.Sleep(100);
+                Thread.Sleep(1);
                 TransferPacket pack = TransObj.GetPacket();
 
                 if (pack.size > 0)
